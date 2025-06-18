@@ -1,0 +1,123 @@
+#server:
+#  port: 8080
+#
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/blpsdb
+#    username: blps
+#    password: blps
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    generate-ddl: true
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        format_sql: true
+#  jwt:
+#    secret-key: "09d62fc50a9d8c09c3c3a82a3d5762cdfd85de199cb864b5378a77ff2c230159"
+#    expiration: 360000000000
+#
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#    listener:
+#      simple:
+#        acknowledge-mode: auto
+#        retry:
+#          enabled: true
+#          max-attempts: 3
+#          initial-interval: 5000ms
+#
+#    quartz:
+#      job-store-type: memory
+#      properties:
+#        org:
+#          quartz:
+#            threadPool:
+#              threadCount: 5
+#
+#  app:
+#    queue:
+#      application: applications.queue
+#      interview: interview.queue
+#
+#camunda:
+#  bpm:
+#    admin-user:
+#      id: demo
+#      password: demo
+#    webapp:
+#      application-path: /camunda
+#    auto-deployment-enabled: true
+#    deployment-resource-pattern: classpath*:**/*.bpmn
+#
+#logging:
+#  level:
+#    org.fergoeqs.blps1: TRACE
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blpsdb
+    username: blps
+    password: blps
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  jwt:
+    secret-key: "09d62fc50a9d8c09c3c3a82a3d5762cdfd85de199cb864b5378a77ff2c230159"
+    expiration: 360000000000
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 5000ms
+
+    quartz:
+      job-store-type: memory
+      properties:
+        org:
+          quartz:
+            threadPool:
+              threadCount: 5
+
+app:
+  queue:
+    application: applications.queue
+    interview: interview.queue
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      password: demo
+    webapp:
+      application-path: /camunda
+    auto-deployment-enabled: true
+    deployment-resource-pattern: classpath*:**/*.bpmn
+
+logging:
+  level:
+    org.fergoeqs.blps1: TRACE

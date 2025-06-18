@@ -1,0 +1,38 @@
+server:
+port: 8083
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  mail:
+    host: smtp.yandex.ru
+    port: 587
+    username: 
+    password:
+    protocol:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.yandex.ru
+  docker:
+    compose:
+      enabled: false
+
+
+jira:
+  base-url:
+  username:
+  api-token:
+  project-key: REC
+  issue-type: Candidate
+  transitions:
+    hire: "Hired"
+    reject: "Rejected"
+app:
+  queues:
+    application: applications.queue
+    interview: interview.queue

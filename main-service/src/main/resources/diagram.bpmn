@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01j7qhs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:collaboration id="Collaboration_0soi24w">
+    <bpmn:participant id="Participant_158shcs" name="create vacancy" processRef="create_vacancy_proccess" />
+  </bpmn:collaboration>
+  <bpmn:process id="create_vacancy_proccess" name="create_vacancy_proccess" isExecutable="true" camunda:historyTimeToLive="30">
+    <bpmn:startEvent id="Event_116yk2s">
+      <bpmn:outgoing>Flow_01poldb</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_01poldb" sourceRef="Event_116yk2s" targetRef="Activity_1xu1mc8" />
+    <bpmn:userTask id="Activity_1xu1mc8" name="Ввод данных о вакансии">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="title" label="title" type="string" defaultValue="Vacancy">
+            <camunda:properties />
+          </camunda:formField>
+          <camunda:formField id="description" label="description" type="string" defaultValue="description.." />
+          <camunda:formField id="resumeRequired" label="resumeRequired" type="boolean" defaultValue="false" />
+          <camunda:formField id="coverLetterRequired" label="coverLetterRequired" type="boolean" defaultValue="false" />
+          <camunda:formField id="keywords" label="keywords" type="string" defaultValue="java, spring, hibernate" />
+          <camunda:formField id="pendingLimit" label="pendingLimit" type="long" defaultValue="100" />
+          <camunda:formField id="employerId" label="employerId" type="long" />
+          <camunda:formField id="userId" label="userId" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01poldb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ax3g4y</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1ax3g4y" sourceRef="Activity_1xu1mc8" targetRef="Activity_1e0uon7" />
+    <bpmn:serviceTask id="Activity_1e0uon7" name="Создание вакансии" camunda:delegateExpression="${createVacancyDelegator}">
+      <bpmn:incoming>Flow_1ax3g4y</bpmn:incoming>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0soi24w">
+      <bpmndi:BPMNShape id="Participant_158shcs_di" bpmnElement="Participant_158shcs" isHorizontal="true">
+        <dc:Bounds x="132" y="70" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_116yk2s_di" bpmnElement="Event_116yk2s">
+        <dc:Bounds x="192" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11vuw0f_di" bpmnElement="Activity_1xu1mc8">
+        <dc:Bounds x="280" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04jyoa9_di" bpmnElement="Activity_1e0uon7">
+        <dc:Bounds x="440" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01poldb_di" bpmnElement="Flow_01poldb">
+        <di:waypoint x="228" y="190" />
+        <di:waypoint x="280" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ax3g4y_di" bpmnElement="Flow_1ax3g4y">
+        <di:waypoint x="380" y="190" />
+        <di:waypoint x="440" y="190" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
