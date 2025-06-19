@@ -1,33 +1,32 @@
-//package org.fergoeqs.blps1.config;
-//
-//import com.atomikos.icatch.jta.UserTransactionManager;
-//import jakarta.transaction.SystemException;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.context.annotation.Primary;
-//import org.springframework.transaction.annotation.EnableTransactionManagement;
-//import org.springframework.transaction.jta.JtaTransactionManager;
-//
-//
-//@Configuration
-//@EnableTransactionManagement
-//public class TransactionConfig {
-//
-//    @Bean(initMethod = "init", destroyMethod = "close")
-//    public UserTransactionManager userTransactionManager() throws SystemException {
-//        UserTransactionManager userTransactionManager = new UserTransactionManager();
-//        userTransactionManager.setTransactionTimeout(300000);
-//        userTransactionManager.setForceShutdown(true);
-//        return userTransactionManager;
-//    }
-//
-//    @Bean
-//    @Primary
-//    public JtaTransactionManager transactionManager(UserTransactionManager userTransactionManager) {
-//        JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-//        jtaTransactionManager.setTransactionManager(userTransactionManager);
-//        jtaTransactionManager.setUserTransaction(userTransactionManager);
-//        jtaTransactionManager.setTransactionSynchronization(JtaTransactionManager.SYNCHRONIZATION_ALWAYS);
-//        return jtaTransactionManager;
-//    }
-//}
+package org.fergoeqs.blps1.config;
+
+import jakarta.persistence.EntityManagerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
+
+@Configuration
+@EnableTransactionManagement
+public class TransactionConfig {
+
+    @Bean
+    public PlatformTransactionManager transactionManager(
+            EntityManagerFactory entityManagerFactory) {
+
+        JpaTransactionManager tm = new JpaTransactionManager();
+        tm.setEntityManagerFactory(entityManagerFactory);
+        return tm;
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setPropagationBehaviorName("PROPAGATION_REQUIRED");
+        template.setIsolationLevelName("ISOLATION_DEFAULT");
+        template.setTimeout(30);
+        return template;
+    }
+}

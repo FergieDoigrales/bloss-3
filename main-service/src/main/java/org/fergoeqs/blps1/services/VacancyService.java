@@ -16,6 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class VacancyService {
         return vacancyRepository.findById(id);
     }
 
+    @Transactional(transactionManager = "transactionManager")
     public VacancyResponse createVacancy(VacancyRequest request, Long userId) {
         Employer employer = employerRepository.findByUserId(userId)
                 .orElseThrow(() -> new AccessDeniedException("User is not an employer"));
@@ -76,7 +78,10 @@ public class VacancyService {
 
         System.out.println("Перед сохранением вакансии");
         Vacancy savedVacancy = vacancyRepository.save(vacancy);
-        System.out.println("после");
+        System.out.println("Сохраненный ID: " + savedVacancy.getId());
+        if (savedVacancy.getId() == null) {
+            throw new IllegalStateException("ID не был сгенерирован!");
+        }        System.out.println("после");
         return new VacancyResponse(
                 savedVacancy.getId(),
                 savedVacancy.getTitle(),
