@@ -21,14 +21,14 @@ import java.util.UUID;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
-    private final JmsTemplate jmsTemplate;
+//    private final JmsTemplate jmsTemplate;
     private final String applicationQueue;
 
     public ApplicationController(
-            JmsTemplate jmsTemplate,
+
             @Value("${app.queue.application}") String applicationQueue, ApplicationService applicationService) {
 
-        this.jmsTemplate = jmsTemplate;
+//        this.jmsTemplate = jmsTemplate;
         this.applicationQueue = applicationQueue;
         this.applicationService = applicationService;
 
