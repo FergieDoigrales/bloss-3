@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-@Component("createVacancyDelegator")
+@Component("CreateVacancyDelegator")
 @RequiredArgsConstructor
 
 public class CreateVacancyDelegator implements JavaDelegate {
