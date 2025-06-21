@@ -118,18 +118,18 @@ camunda:
       password: demo
     webapp:
       application-path: /camunda
-#    history-level: full
+    history-level: full
     auto-deployment-enabled: true
     deployment-resource-pattern: classpath*:**/*.bpmn
     history-time-to-live: 30
 
 logging:
   level:
-    org.springframework: TRACE
+    org.springframework: INFO
     org:
       hibernate:
-        SQL: TRACE
+        SQL: INFO
         type:
           descriptor:
             sql:
-              BasicBinder: TRACE
+              BasicBinder: INFO

@@ -2,8 +2,8 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01j7qhs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
   <bpmn:collaboration id="Collaboration_0soi24w">
     <bpmn:participant id="Participant_158shcs" name="Create vacancy" processRef="create_vacancy_proccess" />
-    <bpmn:participant id="Participant_19i478v" name="Application Review" processRef="add_application_review" />
     <bpmn:participant id="Participant_13wkzn0" name="Create Application" processRef="create_application_process" />
+    <bpmn:participant id="Participant_19i478v" name="Application Review" processRef="add_application_review" />
     <bpmn:textAnnotation id="TextAnnotation_1afrs7v">
       <bpmn:text>Соискатель подходит?</bpmn:text>
     </bpmn:textAnnotation>
@@ -53,84 +53,19 @@
     <bpmn:sequenceFlow id="Flow_1ls5ptv" sourceRef="Gateway_1r3yew9" targetRef="data_input" />
     <bpmn:sequenceFlow id="Flow_130x4dd" sourceRef="Event_0hkmqe0" targetRef="Gateway_1r3yew9" />
   </bpmn:process>
-  <bpmn:process id="add_application_review" name="add_application_review" isExecutable="true" camunda:historyTimeToLive="30">
-    <bpmn:serviceTask id="Activity_05riahq" name="Пригласить на собеседование" camunda:delegateExpression="${AcceptApplicationDelegator}">
-      <bpmn:incoming>Flow_0w5p0rf</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fk772a</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_0mjetfs">
-      <bpmn:incoming>Flow_0zw5rhe</bpmn:incoming>
-      <bpmn:outgoing>Flow_0w5p0rf</bpmn:outgoing>
-      <bpmn:outgoing>Flow_18ivkq5</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_0thfsi7" default="Flow_1hyak8k">
-      <bpmn:incoming>Flow_0fk772a</bpmn:incoming>
-      <bpmn:incoming>Flow_1sqg35j</bpmn:incoming>
-      <bpmn:outgoing>Flow_1hyak8k</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:userTask id="application_data" name="Получить отклик">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="applicationId" label="applicationId" type="long" defaultValue="1" />
-          <camunda:formField id="decision" label="decision" type="string" defaultValue="reject" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0bcgqs5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0zw5rhe</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:startEvent id="Event_0cxcuq3">
-      <bpmn:outgoing>Flow_0bcgqs5</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_1gbcfnz" name="Уведомить об отказе" camunda:delegateExpression="${RejectApplicationDelegator}">
-      <bpmn:incoming>Flow_18ivkq5</bpmn:incoming>
-      <bpmn:outgoing>Flow_1sqg35j</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_05lyf2l">
-      <bpmn:incoming>Flow_1hyak8k</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0w5p0rf" sourceRef="Gateway_0mjetfs" targetRef="Activity_05riahq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "accept"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0fk772a" sourceRef="Activity_05riahq" targetRef="Gateway_0thfsi7" />
-    <bpmn:sequenceFlow id="Flow_0zw5rhe" sourceRef="application_data" targetRef="Gateway_0mjetfs" />
-    <bpmn:sequenceFlow id="Flow_18ivkq5" sourceRef="Gateway_0mjetfs" targetRef="Activity_1gbcfnz">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "reject"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1sqg35j" sourceRef="Activity_1gbcfnz" targetRef="Gateway_0thfsi7" />
-    <bpmn:sequenceFlow id="Flow_1hyak8k" sourceRef="Gateway_0thfsi7" targetRef="Event_05lyf2l" />
-    <bpmn:sequenceFlow id="Flow_0bcgqs5" sourceRef="Event_0cxcuq3" targetRef="application_data" />
-  </bpmn:process>
+  <bpmn:error id="Error_02y2hcv" name="VacancyValidationError" errorCode="VacancyValidationError" />
+  <bpmn:error id="Error_0h99o9o" name="ApplicationValidationError" errorCode="ApplicationValidationError" />
+  <bpmn:error id="Error_0fw4e3c" name="LetterValidationError" errorCode="LetterValidationError" />
   <bpmn:process id="create_application_process" name="create_application_process" isExecutable="true" camunda:historyTimeToLive="30">
-    <bpmn:startEvent id="Event_046yu70">
-      <bpmn:outgoing>Flow_0t87mv7</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:endEvent id="Event_1ug09nt">
-      <bpmn:incoming>Flow_1rbgsoc</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="Gateway_0kl85ax">
-      <bpmn:incoming>Flow_0t87mv7</bpmn:incoming>
-      <bpmn:incoming>Flow_1996azg</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cq2nun</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="add_cover_letter" name="Добавление сопроводительного письма" camunda:delegateExpression="${AddCoverLetterDelegator}">
-      <bpmn:incoming>Flow_0arcu8s</bpmn:incoming>
-      <bpmn:outgoing>Flow_1rbgsoc</bpmn:outgoing>
+    <bpmn:serviceTask id="create_application" name="Создание отклика" camunda:delegateExpression="${CreateApplicationDelegator}">
+      <bpmn:incoming>Flow_0je469j</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lshqtr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="input_cover_letter" name="Ввод сопроводительного письма">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="applicationId" label="applicationId" type="long" defaultValue="1" />
-          <camunda:formField id="content" label="content" type="string" defaultValue="Возьмите меня на рабобту, я умею делать кротовуху." />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0k8fe30</bpmn:incoming>
-      <bpmn:outgoing>Flow_0arcu8s</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_01i6s2x">
-      <bpmn:incoming>Flow_1lshqtr</bpmn:incoming>
-      <bpmn:incoming>Flow_0tlq5om</bpmn:incoming>
-      <bpmn:outgoing>Flow_0k8fe30</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
+    <bpmn:boundaryEvent id="Event_0erabv9" attachedToRef="create_application">
+      <bpmn:outgoing>Flow_1996azg</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1lw59gv" errorRef="Error_0h99o9o" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1996azg" sourceRef="Event_0erabv9" targetRef="Gateway_0kl85ax" />
     <bpmn:userTask id="input_application_data" name="Ввод данных для отклика">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -146,31 +81,96 @@
       <bpmn:incoming>Flow_1cq2nun</bpmn:incoming>
       <bpmn:outgoing>Flow_0je469j</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="create_application" name="Создание отклика" camunda:delegateExpression="${CreateApplicationDelegator}">
-      <bpmn:incoming>Flow_0je469j</bpmn:incoming>
-      <bpmn:outgoing>Flow_1lshqtr</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_0je469j" sourceRef="input_application_data" targetRef="create_application" />
+    <bpmn:exclusiveGateway id="Gateway_01i6s2x">
+      <bpmn:incoming>Flow_1lshqtr</bpmn:incoming>
+      <bpmn:incoming>Flow_0tlq5om</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k8fe30</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1lshqtr" sourceRef="create_application" targetRef="Gateway_01i6s2x" />
+    <bpmn:userTask id="input_cover_letter" name="Ввод сопроводительного письма">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="applicationId" label="applicationId" type="long" defaultValue="1" />
+          <camunda:formField id="content" label="content" type="string" defaultValue="Возьмите меня на рабобту, я умею делать кротовуху." />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0k8fe30</bpmn:incoming>
+      <bpmn:outgoing>Flow_0arcu8s</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0k8fe30" sourceRef="Gateway_01i6s2x" targetRef="input_cover_letter" />
+    <bpmn:serviceTask id="add_cover_letter" name="Добавление сопроводительного письма" camunda:delegateExpression="${AddCoverLetterDelegator}">
+      <bpmn:incoming>Flow_0arcu8s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rbgsoc</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0arcu8s" sourceRef="input_cover_letter" targetRef="add_cover_letter" />
     <bpmn:boundaryEvent id="Event_13qijqu" attachedToRef="add_cover_letter">
       <bpmn:outgoing>Flow_0tlq5om</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0h15n2l" errorRef="Error_0fw4e3c" />
     </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_0erabv9" attachedToRef="create_application">
-      <bpmn:outgoing>Flow_1996azg</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1lw59gv" errorRef="Error_0h99o9o" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0t87mv7" sourceRef="Event_046yu70" targetRef="Gateway_0kl85ax" />
-    <bpmn:sequenceFlow id="Flow_1rbgsoc" sourceRef="add_cover_letter" targetRef="Event_1ug09nt" />
-    <bpmn:sequenceFlow id="Flow_1996azg" sourceRef="Event_0erabv9" targetRef="Gateway_0kl85ax" />
-    <bpmn:sequenceFlow id="Flow_1cq2nun" sourceRef="Gateway_0kl85ax" targetRef="input_application_data" />
-    <bpmn:sequenceFlow id="Flow_0arcu8s" sourceRef="input_cover_letter" targetRef="add_cover_letter" />
-    <bpmn:sequenceFlow id="Flow_0k8fe30" sourceRef="Gateway_01i6s2x" targetRef="input_cover_letter" />
-    <bpmn:sequenceFlow id="Flow_1lshqtr" sourceRef="create_application" targetRef="Gateway_01i6s2x" />
     <bpmn:sequenceFlow id="Flow_0tlq5om" sourceRef="Event_13qijqu" targetRef="Gateway_01i6s2x" />
-    <bpmn:sequenceFlow id="Flow_0je469j" sourceRef="input_application_data" targetRef="create_application" />
+    <bpmn:exclusiveGateway id="Gateway_0kl85ax">
+      <bpmn:incoming>Flow_1996azg</bpmn:incoming>
+      <bpmn:incoming>Flow_0t87mv7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cq2nun</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1cq2nun" sourceRef="Gateway_0kl85ax" targetRef="input_application_data" />
+    <bpmn:endEvent id="Event_1ug09nt">
+      <bpmn:incoming>Flow_1rbgsoc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1rbgsoc" sourceRef="add_cover_letter" targetRef="Event_1ug09nt" />
+    <bpmn:startEvent id="Event_046yu70">
+      <bpmn:outgoing>Flow_0t87mv7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0t87mv7" sourceRef="Event_046yu70" targetRef="Gateway_0kl85ax" />
   </bpmn:process>
-  <bpmn:error id="Error_02y2hcv" name="VacancyValidationError" errorCode="VacancyValidationError" />
-  <bpmn:error id="Error_0h99o9o" name="ApplicationValidationError" errorCode="ApplicationValidationError" />
-  <bpmn:error id="Error_0fw4e3c" name="LetterValidationError" errorCode="LetterValidationError" />
+  <bpmn:process id="add_application_review" name="add_application_review" isExecutable="true" camunda:historyTimeToLive="30">
+    <bpmn:endEvent id="Event_05lyf2l">
+      <bpmn:incoming>Flow_1hyak8k</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1gbcfnz" name="Уведомить об отказе" camunda:delegateExpression="${RejectApplicationDelegator}">
+      <bpmn:incoming>Flow_18ivkq5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sqg35j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1sqg35j" sourceRef="Activity_1gbcfnz" targetRef="Gateway_0thfsi7" />
+    <bpmn:startEvent id="Event_0cxcuq3">
+      <bpmn:outgoing>Flow_0bcgqs5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="application_data" name="Получить отклик">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="applicationId" label="applicationId" type="long" defaultValue="1" />
+          <camunda:formField id="decision" label="decision" type="string" defaultValue="reject" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bcgqs5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zw5rhe</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0bcgqs5" sourceRef="Event_0cxcuq3" targetRef="application_data" />
+    <bpmn:exclusiveGateway id="Gateway_0thfsi7" default="Flow_1hyak8k">
+      <bpmn:incoming>Flow_1sqg35j</bpmn:incoming>
+      <bpmn:incoming>Flow_0fk772a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hyak8k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hyak8k" sourceRef="Gateway_0thfsi7" targetRef="Event_05lyf2l" />
+    <bpmn:exclusiveGateway id="Gateway_0mjetfs">
+      <bpmn:incoming>Flow_0zw5rhe</bpmn:incoming>
+      <bpmn:outgoing>Flow_0w5p0rf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18ivkq5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0w5p0rf" sourceRef="Gateway_0mjetfs" targetRef="Activity_05riahq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "accept"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18ivkq5" sourceRef="Gateway_0mjetfs" targetRef="Activity_1gbcfnz">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "reject"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zw5rhe" sourceRef="application_data" targetRef="Gateway_0mjetfs" />
+    <bpmn:serviceTask id="Activity_05riahq" name="Пригласить на собеседование" camunda:delegateExpression="${AcceptApplicationDelegator}">
+      <bpmn:incoming>Flow_0w5p0rf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fk772a</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0fk772a" sourceRef="Activity_05riahq" targetRef="Gateway_0thfsi7" />
+  </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0soi24w">
       <bpmndi:BPMNShape id="Participant_19i478v_di" bpmnElement="Participant_19i478v" isHorizontal="true">

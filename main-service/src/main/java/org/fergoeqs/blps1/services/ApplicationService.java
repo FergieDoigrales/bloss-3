@@ -41,18 +41,19 @@ public class ApplicationService {
     private final ApplicantRepository applicantRepository;
     private final ResumeRepository resumeRepository;
     private final EmployerRepository employerRepository;
-//    private final JmsTemplate jmsTemplate;
+    private final JmsTemplate jmsTemplate;
 
     public ApplicationService(ApplicationRepository applicationRepository,
                               VacancyRepository vacancyRepository,
                               ApplicantRepository applicantRepository,
-                              ResumeRepository resumeRepository, EmployerRepository employerRepository) {
+                              ResumeRepository resumeRepository, EmployerRepository employerRepository,
+                              JmsTemplate jmsTemplate) {
         this.applicationRepository = applicationRepository;
         this.vacancyRepository = vacancyRepository;
         this.applicantRepository = applicantRepository;
         this.resumeRepository = resumeRepository;
         this.employerRepository = employerRepository;
-//        this.jmsTemplate = jmsTemplate;
+        this.jmsTemplate = jmsTemplate;
     }
 
     @Transactional
@@ -170,15 +171,15 @@ public class ApplicationService {
                     null,
                     "ACCEPTED"
             );
-//
-//            jmsTemplate.convertAndSend(
-//                    "applications.queue",
-//                    jiraEvent,
-//                    message -> {
-//                        message.setJMSType("CreateJiraIssue");
-//                        return message;
-//                    }
-//            );
+
+            jmsTemplate.convertAndSend(
+                    "applications.queue",
+                    jiraEvent,
+                    message -> {
+                        message.setJMSType("CreateJiraIssue");
+                        return message;
+                    }
+            );
 
             return mapToResponse(updated);
         }
@@ -222,15 +223,15 @@ public class ApplicationService {
                     "REJECTED"
             );
 
-//            jmsTemplate.convertAndSend(
-//                    "applications.queue",
-//                    event,
-//                    message -> {
-//                        message.setJMSType("ApplicationRejected");
-//                        message.setJMSPriority(4);
-//                        return message;
-//                    }
-//            );
+            jmsTemplate.convertAndSend(
+                    "applications.queue",
+                    event,
+                    message -> {
+                        message.setJMSType("ApplicationRejected");
+                        message.setJMSPriority(4);
+                        return message;
+                    }
+            );
 
             return mapToResponse(updated);
         }
@@ -327,10 +328,10 @@ public class ApplicationService {
                     "HIRED"
             );
 
-//            jmsTemplate.convertAndSend("applications.queue", event, message -> {
-//                message.setStringProperty("EventType", "StatusChanged");
-//                return message;
-//            });
+            jmsTemplate.convertAndSend("applications.queue", event, message -> {
+                message.setStringProperty("EventType", "StatusChanged");
+                return message;
+            });
 
             return mapToResponse(updated);
     }

@@ -21,14 +21,13 @@ import java.util.UUID;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
-//    private final JmsTemplate jmsTemplate;
+    private final JmsTemplate jmsTemplate;
     private final String applicationQueue;
 
     public ApplicationController(
 
-            @Value("${app.queue.application}") String applicationQueue, ApplicationService applicationService) {
-
-//        this.jmsTemplate = jmsTemplate;
+            @Value("${app.queue.application}") String applicationQueue, ApplicationService applicationService, JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
         this.applicationQueue = applicationQueue;
         this.applicationService = applicationService;
 
@@ -39,11 +38,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApplicationResponse> createApplication(
             @Valid @RequestBody ApplicationRequest request) throws Exception {
-//        String correlationId = UUID.randomUUID().toString();
-//        jmsTemplate.convertAndSend(applicationQueue, request, message -> {
-//            message.setJMSCorrelationID(correlationId);
-//            return message;
-//        });
+        String correlationId = UUID.randomUUID().toString();
+        jmsTemplate.convertAndSend(applicationQueue, request, message -> {
+            message.setJMSCorrelationID(correlationId);
+            return message;
+        });
         ApplicationResponse response = applicationService.createApplication(request);
         return ResponseEntity.ok(response);
 //        return ResponseEntity.accepted().body(
