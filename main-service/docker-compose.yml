@@ -4,10 +4,10 @@ volumes:
 
 services:
   dev-pg12:
-    container_name: bloss4
+    container_name: bloss4-test
     image: postgres:17
     environment:
-      POSTGRES_DB: blpsdb
+      POSTGRES_DB: blpsdb1
       POSTGRES_USER: blps
       POSTGRES_PASSWORD: blps
     command:

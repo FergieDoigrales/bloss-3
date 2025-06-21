@@ -65,7 +65,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/blpsdb
+    url: jdbc:postgresql://localhost:5432/blpsdb1
     username: blps
     password: blps
     driver-class-name: org.postgresql.Driver
@@ -119,15 +119,16 @@ camunda:
     webapp:
       application-path: /camunda
 #    history-level: full
-    auto-deployment-enabled: false
+    auto-deployment-enabled: true
     deployment-resource-pattern: classpath*:**/*.bpmn
+    history-time-to-live: 30
 
 logging:
   level:
     org.springframework: TRACE
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: TRACE
         type:
           descriptor:
             sql:
