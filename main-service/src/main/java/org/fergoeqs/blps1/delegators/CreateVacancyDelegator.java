@@ -1,14 +1,13 @@
 package org.fergoeqs.blps1.delegators;
 
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.fergoeqs.blps1.dto.VacancyRequest;
 import org.fergoeqs.blps1.dto.VacancyResponse;
 import org.fergoeqs.blps1.services.VacancyService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Component("CreateVacancyDelegator")
@@ -40,10 +39,13 @@ public class CreateVacancyDelegator implements JavaDelegate {
                     execution.getVariable("keywords").toString(),
                     Long.parseLong(execution.getVariable("employerId").toString()),
                     pendingLimitValue);
-            System.out.println("вахуи пон");
-            VacancyResponse response = vacancyService.createVacancy(request, userIdValue);
+            try {
+                VacancyResponse response = vacancyService.createVacancy(request, userIdValue);
 
-            return response;
+                return response;
+            } catch (Exception e) {
+                throw new BpmnError("VacancyValidationError");
+            }
         });
 
 

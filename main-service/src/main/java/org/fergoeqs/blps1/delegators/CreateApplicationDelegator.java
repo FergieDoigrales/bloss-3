@@ -1,6 +1,7 @@
 package org.fergoeqs.blps1.delegators;
 
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.fergoeqs.blps1.dto.ApplicationRequest;
@@ -31,13 +32,17 @@ public class CreateApplicationDelegator implements JavaDelegate {
                     coverLetter
             );
 
-            ApplicationResponse response = applicationService.createApplication(request);
+            try {
+                ApplicationResponse response = applicationService.createApplication(request);
 
-            execution.setVariable("applicationId", response.id());
-            execution.setVariable("applicationStatus", response.status());
-            execution.setVariable("warningMessage", response.warningMessage());
+                execution.setVariable("applicationId", response.id());
+                execution.setVariable("applicationStatus", response.status());
+                execution.setVariable("warningMessage", response.warningMessage());
 
-            return response;
+                return response;
+            } catch (Exception e) {
+                throw new BpmnError("ApplicationValidationError");
+            }
         });
     }
 

@@ -46,8 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (requestUri.startsWith("/camunda") ||
                 requestUri.startsWith("/app") ||
-                requestUri.startsWith("/api") ||
-                requestUri.startsWith("/lib") ||
+//                requestUri.startsWith("/api") ||
+//                requestUri.startsWith("/lib") ||
                 requestUri.startsWith("/assets")) {
             logger.debug("Skipping authentication for: {}", requestUri);
             filterChain.doFilter(request, response);

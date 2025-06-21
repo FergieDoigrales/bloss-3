@@ -1,6 +1,7 @@
 package org.fergoeqs.blps1.delegators;
 
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.fergoeqs.blps1.dto.ApplicationResponse;
@@ -43,12 +44,6 @@ public class AcceptApplicationDelegator implements JavaDelegate {
             }
         }
         throw new IllegalArgumentException("Unsupported type for variable '" + name + "': " + value.getClass());
-    }
-
-    private void logBeforeAccept(Long applicationId, Long userId) {
-        System.out.println("=== Принятие заявки ===");
-        System.out.println("Application ID: " + applicationId);
-        System.out.println("User ID: " + userId);
     }
 
     private void saveResultsToExecution(DelegateExecution execution, ApplicationResponse response) {

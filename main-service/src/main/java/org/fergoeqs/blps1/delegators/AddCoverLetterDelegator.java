@@ -1,6 +1,7 @@
 package org.fergoeqs.blps1.delegators;
 
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.fergoeqs.blps1.dto.ApplicationResponse;
@@ -22,11 +23,14 @@ public class AddCoverLetterDelegator implements JavaDelegate {
             String coverLetter = getStringVariable(execution, "content");
 
             logBeforeUpdate(applicationId, coverLetter);
-            ApplicationResponse response = applicationService.addCoverLetter(applicationId, coverLetter);
-            saveResultsToExecution(execution, response);
-            logAfterUpdate(response);
-
-            return response;
+            try {
+                ApplicationResponse response = applicationService.addCoverLetter(applicationId, coverLetter);
+                saveResultsToExecution(execution, response);
+                logAfterUpdate(response);
+                return response;
+            } catch (Exception e) {
+                throw new BpmnError("LetterValidationError");
+            }
         });
     }
 
